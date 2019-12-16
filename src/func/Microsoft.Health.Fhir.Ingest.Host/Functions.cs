@@ -18,6 +18,8 @@ using Microsoft.Health.Fhir.Ingest.Host;
 using Microsoft.Health.Fhir.Ingest.Telemetry;
 using Microsoft.Health.Fhir.Ingest.Template;
 
+[assembly: System.Resources.NeutralResourcesLanguage("en")]
+
 namespace Microsoft.Health.Fhir.Ingest.Service
 {
     public static class Functions

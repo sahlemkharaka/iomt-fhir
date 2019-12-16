@@ -57,4 +57,17 @@
     <ProjectReference Include="..\..\lib\Microsoft.Health.Fhir.R4.Ingest\Microsoft.Health.Fhir.R4.Ingest.csproj" />
     <ProjectReference Include="..\..\lib\Microsoft.Health.Fhir.Ingest\Microsoft.Health.Fhir.Ingest.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Templates.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Templates.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Templates.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Templates.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>
