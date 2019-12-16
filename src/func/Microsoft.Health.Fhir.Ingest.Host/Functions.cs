@@ -26,7 +26,6 @@ namespace Microsoft.Health.Fhir.Ingest.Service
         [FunctionName("MeasurementCollectionToFhir")]
         public static async Task<IActionResult> MeasurementCollectionToFhir(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
-            [Blob("template/%Template:FhirMapping%", FileAccess.Read)] string templateDefinition,
             [MeasurementFhirImport] MeasurementFhirImportService measurementImportService,
             ILogger log)
         {
@@ -35,7 +34,7 @@ namespace Microsoft.Health.Fhir.Ingest.Service
 
             try
             {
-                await measurementImportService.ProcessStreamAsync(req.Body, templateDefinition, log).ConfigureAwait(false);
+                await measurementImportService.ProcessStreamAsync(req.Body, Templates.FhirMapping, log).ConfigureAwait(false);
                 return new AcceptedResult();
             }
             catch (Exception ex)
@@ -49,15 +48,13 @@ namespace Microsoft.Health.Fhir.Ingest.Service
         public static async Task NormalizeDeviceData(
             [EventHubTrigger("input", Connection = "InputEventHub")] EventData[] events,
             [EventHubMeasurementCollector("output", Connection = "OutputEventHub")] IAsyncCollector<IMeasurement> output,
-            [Blob("template/%Template:DeviceContent%", FileAccess.Read)] string templateDefinitions,
             ILogger log)
         {
             try
             {
-                EnsureArg.IsNotNull(templateDefinitions, nameof(templateDefinitions));
                 EnsureArg.IsNotNull(events, nameof(events));
 
-                var template = CollectionContentTemplateFactory.Default.Create(templateDefinitions);
+                var template = CollectionContentTemplateFactory.Default.Create(Templates.DeviceContent);
 
                 log.LogMetric(Metrics.DeviceEvent, events.Length);
                 IDataNormalizationService<EventData, IMeasurement> dataNormalizationService = new MeasurementEventNormalizationService(log, template);
