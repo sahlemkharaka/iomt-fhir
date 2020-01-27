@@ -12,7 +12,7 @@
     },
     "RepositoryUrl": {
       "type": "string",
-      "defaultValue": "https://github.com/Microsoft/iomt-fhir",
+      "defaultValue": "https://github.com/sahlemkharaka/iomt-fhir",
       "metadata": {
         "description": "Repository to pull source code from. If blank, source code will not be deployed."
       }
@@ -124,7 +124,6 @@
         "UK West",
         "UK South"
       ],
-      "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "The location of the deployed resources."
       }
