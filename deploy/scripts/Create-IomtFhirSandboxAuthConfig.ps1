@@ -121,52 +121,6 @@ if (!$application) {
     $application = Get-AzureAdApplication -Filter "identifierUris/any(uri:uri eq '$fhirServiceUrl')"
 }
 
-$UserNamePrefix = "${EnvironmentName}-"
-$userId = "${UserNamePrefix}admin"
-$domain = $tenantInfo.TenantDomain
-$userUpn = "${userId}@${domain}"
-
-# See if the user exists
-Write-Host "Checking if UserPrincipalName exists"
-$aadUser = Get-AzureADUser -Filter "userPrincipalName eq '$userUpn'"
-if ($aadUser)
-{
-    Write-Host "User found, will update."
-}
-else 
-{
-    Write-Host "User not found, will create."
-}
-
-if ($AdminPassword)
-{
-    $passwordSecureString = $AdminPassword
-    $password = (New-Object PSCredential "user",$passwordSecureString).GetNetworkCredential().Password
-}
-else
-{
-    Add-Type -AssemblyName System.Web
-    $password = [System.Web.Security.Membership]::GeneratePassword(16, 5)
-    $passwordSecureString = ConvertTo-SecureString $password -AsPlainText -Force
-}
-
-if ($aadUser) {
-    Set-AzureADUserPassword -ObjectId $aadUser.ObjectId -Password $passwordSecureString -EnforceChangePasswordPolicy $false -ForceChangePasswordNextLogin $false
-}
-else {
-    $PasswordProfile = New-Object -TypeName Microsoft.Open.AzureAD.Model.PasswordProfile
-    $PasswordProfile.Password = $password
-    $PasswordProfile.EnforceChangePasswordPolicy = $false
-    $PasswordProfile.ForceChangePasswordNextLogin = $false
-
-    $aadUser = New-AzureADUser -DisplayName $userId -PasswordProfile $PasswordProfile -UserPrincipalName $userUpn -AccountEnabled $true -MailNickName $userId
-}
-
-$upnSecureString = ConvertTo-SecureString $userUpn -AsPlainText -Force
-Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name "$userId-upn" -SecretValue $upnSecureString | Out-Null   
-Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name "$userId-password" -SecretValue $passwordSecureString | Out-Null   
-Set-FhirServerUserAppRoleAssignments -ApiAppId $application.AppId -UserPrincipalName $userUpn -AppRoles "admin"
-
 # Create service client
 $serviceClientAppName = "${EnvironmentName}-service-client"
 $serviceClient = Get-AzureAdApplication -Filter "DisplayName eq '$serviceClientAppName'"
