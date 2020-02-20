@@ -12,7 +12,7 @@
     },
     "RepositoryUrl": {
       "type": "string",
-      "defaultValue": "https://github.com/sahlemkharaka/iomt-fhir",
+      "defaultValue": "https://github.com/Microsoft/iomt-fhir",
       "metadata": {
         "description": "Repository to pull source code from. If blank, source code will not be deployed."
       }
@@ -124,6 +124,7 @@
         "UK West",
         "UK South"
       ],
+      "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "The location of the deployed resources."
       }
@@ -195,10 +196,10 @@
     "IotCentralLocation": {
       "type": "string",
       "allowedValues": [
-        "North Europe",
-        "Central US"
+        "northeurope",
+        "centralus"
       ],
-      "defaultValue": "Central US",
+      "defaultValue": "centralus",
       "metadata": {
         "description": "The location of the IoT Central template deployment."
       }
